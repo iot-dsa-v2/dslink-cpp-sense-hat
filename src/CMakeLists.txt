@@ -14,19 +14,19 @@ include_directories(${DSA_SDK_DEPS}/msgpack/include)
 include_directories(${DSA_SDK_DEPS}/jansson-build/include)
 include_directories(${Boost_INCLUDE_DIR})
 
-set(SOURCES example_main.cc)
+set(SOURCES main.cc)
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 include_directories("./include")
 include_directories("${DSA_SDK_SOURCE}/sdk")
 include_directories("${DSA_SDK_INCLUDE}")
 
-add_executable(example_dslink ${SOURCES})
+add_executable(sense-hat-link ${SOURCES})
 
-target_link_libraries(example_dslink dsa_sdk)
-target_link_libraries(example_dslink ${Boost_LIBRARIES})
-target_link_libraries(example_dslink ${OPENSSL_LIBRARIES})
-target_link_libraries(example_dslink crypto)
+target_link_libraries(sense-hat-link dsa_sdk)
+target_link_libraries(sense-hat-link ${Boost_LIBRARIES})
+target_link_libraries(sense-hat-link ${OPENSSL_LIBRARIES})
+target_link_libraries(sense-hat-link crypto)
 
 
-add_dependencies(example_dslink dsa_sdk)
+add_dependencies(sense-hat-link dsa_sdk)
