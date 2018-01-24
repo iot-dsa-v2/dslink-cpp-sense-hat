@@ -27,7 +27,7 @@ struct fb_t {
   uint16_t pixel[8][8];
 };
 
-struct fb_t *fb;
+struct fb_t *fb = nullptr;
 
 static int is_event_device(const struct dirent *dir) {
   return strncmp(EVENT_DEV_NAME, dir->d_name, strlen(EVENT_DEV_NAME) - 1) == 0;
@@ -96,22 +96,9 @@ static int open_fbdev(const char *dev_name) {
   return fd;
 }
 
-void render(const char *color) {
-  unsigned short rgb565 = 0;
-
-  if (strcmp(color, "red") == 0) {
-    rgb565 = 0xF800;
-  } else if (strcmp(color, "green") == 0) {
-    rgb565 = 0x07E0;
-  } else if (strcmp(color, "blue") == 0) {
-    rgb565 = 0x001F;
-  } else if (strcmp(color, "yellow") == 0) {
-    rgb565 = 0xFFE0;
-  } else if (strcmp(color, "purple") == 0) {
-    rgb565 = 0xF81F;
-  } else if (strcmp(color, "white") == 0) {
-    rgb565 = 0xFFFF;
-  }
+void render(unsigned short rgb565) {
+  if (!fb)
+    return;
   for (int i = 0; i < 8; ++i)
     for (int j = 0; j < 8; ++j) {
       fb->pixel[i][j] = rgb565;
@@ -124,13 +111,13 @@ void init_sense_hat() {
 
   fbfd = open_fbdev("RPi-Sense FB");
   if (fbfd <= 0) {
-    ret = fbfd;
     printf("Error: cannot open framebuffer device.\n");
+    return;
   }
 
-  fb = mmap(0, 128, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
+  fb = static_cast<fb_t *>(
+      mmap(0, 128, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0));
   if (!fb) {
-    ret = EXIT_FAILURE;
     printf("Failed to mmap.\n");
   }
 }
